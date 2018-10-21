@@ -73,7 +73,7 @@ connection.connect(function(err) {
             {
                 console.log(res[0].stock_quantity);
                 console.log(res[0].price);
-                console.log("We apologize, we currently do not have enough stock for your order.");
+                console.log("We apologize, we currently do not have enough stock for your order. We do not have enough for your purchase");
             }
             
         })
