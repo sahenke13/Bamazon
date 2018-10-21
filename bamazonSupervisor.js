@@ -27,14 +27,16 @@ function SuperVisorChoice(){
         console.log("The Manager Choose: "+ option)
         
         switch (option){
-
-
-
+            case "View sales by department":
+                console.log("View sales by department");
+                break;
+            case "Create a new department":
+                console.log("Create a new department");
+                break;
+            default:
+                console.log("Something has gone terrible wrong")
         }
-
-
     })
-
 }
 
 
