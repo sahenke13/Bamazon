@@ -29,6 +29,7 @@ function SuperVisorChoice(){
         switch (option){
             case "View sales by department":
                 console.log("View sales by department");
+
                 break;
             case "Create a new department":
                 console.log("Create a new department");
@@ -37,6 +38,14 @@ function SuperVisorChoice(){
                 console.log("Something has gone terrible wrong")
         }
     })
+}
+
+//More functions
+
+function ViewSales(){
+    connection.query("SELECT department_id as Dept. ID, department_name as Dept. Name, over_head_cost as Over Head Cost, total_sales AS Total Sales, (total_sales - over_head_cost) AS total_profit FROM departments")
+
+
 }
 
 
