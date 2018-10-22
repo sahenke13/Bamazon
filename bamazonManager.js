@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
-  
+    ManagerChoice();
   });
 
 function ManagerChoice(){
@@ -30,30 +30,23 @@ function ManagerChoice(){
 
             switch(option){
                 case "Products for sale": 
-                    console.log("Products for sale");
                     Products();
                     break;
                 case "View low inventory":
-                    console.log("Low Inventory")
                     LowInventory();
                     break;
                 case "Add to inventory":
-                    console.log("Add to Inventory");
                     AddInventory()
                     break;
                 case "Add new products":
-                    console.log("Add new products");
                     NewProducts();
                     break;
                 default:
                     console.log("something has gone terrible wrong.")
             }
-          
+     
         }) 
 }
-// run ManagerChoice function
-ManagerChoice();
-
 
 
 //lets make some functions
@@ -72,6 +65,7 @@ function Products(){
                 "Quantity: ", stuff.stock_quantity
             )
         }
+        promptUser();
     })
   }
 
@@ -79,34 +73,44 @@ function Products(){
 function LowInventory(){
         connection.query("SELECT * from products WHERE stock_quantity<5", function(err, res){
             if(err) throw err;
-            for(let i in res){
-            console.log("This product is low: " + res[i].product_name);
+            
+            if (res.length == 0){
+                console.log("\nThere is no low inventory at this time\n");
             }
+            else{
+                for(let i in res){
+                    console.log("This product is low: " + res[i].product_name);
+                        }
+            }
+            promptUser();
         })
   }
 
   //Add to Inventory function
 function AddInventory(){
+       
+        //Show Current Available Inventory
         Products();
+
         GetInventory(function(results){
             inquirer.prompt([
                 {
                 type: "list",
-                message: "What items stock would you like to increasing?",
+                message: "\nWhat items stock would you like to increasing?",
                 name: "stockingPromptName",
                 choices: results.map(money => money.product_name)
                 },
                 {
                 type: "input",
-                message: "How much inventory will you be adding?",
+                message: "\nHow much inventory will you be adding?",
                 name: "stockingInventory"
                 }
             ]).then(function(response){
-           
-                let itemID = results.find(item => item.product_name === response.stockingPromptName)
-                console.log("Item is " + itemID);
-                console.log("itemID is " + itemID.id);
-                console.log("item quantity is : " + itemID.stock_quantity)
+                //Get the Item where 
+                let item = results.find(item => item.product_name === response.stockingPromptName)
+                console.log("Item is " + item);
+                console.log("itemID is " + item.id);
+                console.log("item quantity is : " + item.stock_quantity)
                 let inventoryChoice = response.stockingPromptName;
                 let inventoryQuantIncrease = response.stockingInventory;
                 let newQuant = parseInt(itemID.stock_quantity) + parseInt(inventoryQuantIncrease);
@@ -119,8 +123,10 @@ function AddInventory(){
                         function(err){
                             if(err) throw err;
                      })
+                //Show available products with added inventory
                 Products();
-                connection.end();
+                //prompt the user whether he wants to continue
+                promptUser();
             })
     })
     }
@@ -132,22 +138,22 @@ function NewProducts(){
     inquirer.prompt([
         {
             type: "input",
-            message: "What Item would you like to add to the database?",
+            message: "\nWhat Item would you like to add to the database?",
             name: "newItemName"
         },
         {
             type: "input",
-            message: "What quantity would you like to add?",
+            message: "\nWhat quantity would you like to add?",
             name: "newItemQuant"
         },
         {
             type: "input",
-            message: "What department does this item go in?",
+            message: "\nWhat department does this item go in?",
             name: "newItemDept"
         },
         {
             type: "input",
-            message: "What is the list price of this item?",
+            message: "\nWhat is the list price of this item?",
             name: "newItemPrice"
         }
     ]).then(function(answers){
@@ -167,6 +173,7 @@ function NewProducts(){
         function(err){
             if(err) throw err;
             Products();
+            promptUser();
         }
         )}
     )}
@@ -177,5 +184,21 @@ function GetInventory(callback){
     connection.query("SELECT * FROM products", function(err, res){
         if(err) throw err;
         callback(res);
+    })
+}
+
+//prompt function
+function promptUser(){
+    inquirer.prompt({
+        type: "list",
+        message: "\nWould you like to take any other actions?",
+        name: "reset",
+        choices: ["Yes","No"]
+    }).then(function(response){
+        if(response.reset == "Yes"){
+           ManagerChoice();
+        }else{
+            connection.end();
+        }
     })
 }
