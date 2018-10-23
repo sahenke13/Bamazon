@@ -28,3 +28,5 @@ Running the BamazonSupervisor.js will allow you to View Department Sales, with a
 
 Please see the attached Video for a demonstration.
 
+https://drive.google.com/file/d/1mYBilCvqNI2CdlKPtinO8EZYGvKekwGl/view
+
