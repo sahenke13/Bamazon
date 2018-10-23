@@ -27,7 +27,6 @@ connection.connect(function(err) {
                 "Name: ",stuff.product_name,
                 "Prices: $",stuff.price, 
                 "Quantity: ", stuff.stock_quantity,
-                "Total Sales: $",stuff.product_sales
             )
         }
 
@@ -47,8 +46,6 @@ connection.connect(function(err) {
       ]).then(function(response){
             let itemID = response.itemID;
             let quantityItem = response.quantityItem;
-            console.log(itemID);
-            console.log(quantityItem)
 
         connection.query("SELECT stock_quantity, price, product_sales FROM products WHERE id="+ response.itemID, function(err, res){
             if (err) throw err;
