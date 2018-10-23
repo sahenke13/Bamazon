@@ -64,7 +64,8 @@ function promptUser(){
 }
 
 function ViewSales(){
-    connection.query("SELECT departments.department_id AS ID, products.department_name AS Department, departments.over_head_cost AS OverHead, SUM(product_sales) AS Total_Sales, (SUM(product_sales) - departments.over_head_cost ) AS Total_Profit FROM departments JOIN products ON departments.department_name = products.department_name GROUP BY Department", function(err,res){
+    connection.query("SELECT departments.department_id AS ID, departments.department_name AS Department, departments.over_head_cost AS OverHead, SUM(product_sales) AS Total_Sales, (SUM(product_sales) - departments.over_head_cost ) AS Total_Profit FROM departments LEFT JOIN products ON departments.department_name = products.department_name GROUP BY Department"
+    , function(err,res){
         if(err) throw err;       
         console.table(res);
         promptUser();

@@ -12,17 +12,18 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
+    userChoice();
   });
 
   function Products(){
     connection.query("SELECT * from products", function(err, res){
         if(err) throw err;
-        console.log("\nThese are the items Bamazon has for sale");
+        console.log("\nThese are the items Bamazon has for sale\n");
         for (let i in res){
             let stuff = res[i];
 
             console.log(
-                "\nid: ", stuff.id,
+                "id: ", stuff.id,
                 "Name: ",stuff.product_name,
                 "Prices: $",stuff.price, 
                 "Quantity: ", stuff.stock_quantity,
@@ -36,11 +37,11 @@ connection.connect(function(err) {
   function userChoice(){    
       inquirer.prompt([
           {
-        message: "Input the ID of the Items you would like to purchase",
+        message: "\nInput the ID of the Items you would like to purchase",
         name: "itemID"
           },
           {
-        message: "How many would you like to buy?",
+        message: "\nHow many would you like to buy?",
         name: "quantityItem"
           }
       ]).then(function(response){
@@ -54,10 +55,10 @@ connection.connect(function(err) {
 
             if(quantityItem <= res[0].stock_quantity){
 
-                console.log("We have enough for you to purchase");
+                console.log("\nWe have enough for you to purchase\n");
                 let cost =  (res[0].price) * (quantityItem);
                 let productSales = cost + (res[0].product_sales)
-                console.log("The order total will be: $"+ cost);
+                console.log("\nThe order total will be: $"+ cost);
                 let newquantityItem = res[0].stock_quantity - quantityItem;
         connection.query("UPDATE products SET ? WHERE ?", 
                 [{product_sales: productSales},
@@ -72,7 +73,7 @@ connection.connect(function(err) {
         function(err){
             if(err) throw err;
             Products();
-            connection.end();
+            promptUser()
         })
 
             }
@@ -81,7 +82,7 @@ connection.connect(function(err) {
                 console.log(res[0].stock_quantity);
                 console.log(res[0].price);
                 console.log("We apologize, we currently do not have enough stock for your order. We do not have enough for your purchase");
-                connection.end();
+                promptUser()
             }
             
         })
@@ -91,4 +92,19 @@ connection.connect(function(err) {
 
   }
   Products();
-  userChoice();
+  
+//prompt function
+function promptUser(){
+    inquirer.prompt({
+        type: "list",
+        message: "\nWould you like to take any other actions?",
+        name: "reset",
+        choices: ["Yes","No"]
+    }).then(function(response){
+        if(response.reset == "Yes"){
+           userChoice();
+        }else{
+            connection.end();
+        }
+    })
+}

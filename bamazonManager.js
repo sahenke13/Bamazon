@@ -20,7 +20,7 @@ function ManagerChoice(){
     inquirer.prompt([
         {
         type: "list",
-        message: "Hello, Manager please make your choice",
+        message: "\nHello, Manager please make your choice\n",
         choices: ["Products for sale", "View low inventory", "Add to inventory", "Add new products"],
         name: "choice"
         }
@@ -54,18 +54,35 @@ function ManagerChoice(){
 function Products(){
     connection.query("SELECT * from products", function(err, res){
         if(err) throw err;
-        console.log("\nThese are the items Bamazon has for sale");
+        console.log("\nThese are the items Bamazon has for sale\n");
         for (let i in res){
             let stuff = res[i];
 
             console.log(
-                "\nid: ", stuff.id,
+                "id: ", stuff.id,
                 "Name: ",stuff.product_name,
                 "Prices: ", stuff.price, 
                 "Quantity: ", stuff.stock_quantity
             )
         }
-        promptUser();
+    })
+    promptUser();
+  }
+
+  function ProductsWithOutPrompt(){
+    connection.query("SELECT * from products", function(err, res){
+        if(err) throw err;
+        console.log("\nThese are the items Bamazon has for sale\n");
+        for (let i in res){
+            let stuff = res[i];
+
+            console.log(
+                "id: ", stuff.id,
+                "Name: ",stuff.product_name,
+                "Prices: ", stuff.price, 
+                "Quantity: ", stuff.stock_quantity
+            )
+        }
     })
   }
 
@@ -90,7 +107,7 @@ function LowInventory(){
 function AddInventory(){
        
         //Show Current Available Inventory
-        Products();
+        ProductsWithOutPrompt()
 
         GetInventory(function(results){
             inquirer.prompt([
@@ -108,26 +125,32 @@ function AddInventory(){
             ]).then(function(response){
                 //Get the Item where 
                 let item = results.find(item => item.product_name === response.stockingPromptName)
-                console.log("Item is " + item);
-                console.log("itemID is " + item.id);
-                console.log("item quantity is : " + item.stock_quantity)
+               
+               
                 let inventoryChoice = response.stockingPromptName;
                 let inventoryQuantIncrease = response.stockingInventory;
-                let newQuant = parseInt(itemID.stock_quantity) + parseInt(inventoryQuantIncrease);
-                console.log("Inventory Choice to increase is: " + inventoryChoice);
-                console.log("Quantity to Increase :" + inventoryQuantIncrease);
+                let newQuant = parseInt(item.stock_quantity) + parseInt(inventoryQuantIncrease);
+                // console.log("Inventory Choice to increase is: " + inventoryChoice);
+                // console.log("Quantity to Increase :" + inventoryQuantIncrease);
+                // console.log("item quantity is : " + item.stock_quantity)
                 
                 connection.query("UPDATE products SET ? WHERE ?", 
                     [{stock_quantity: newQuant},
-                    {id: itemID.id}],
+                    {id: item.id}],
                         function(err){
                             if(err) throw err;
+
+                            
                      })
+
+                ProductsWithOutPrompt()
                 //Show available products with added inventory
-                Products();
-                //prompt the user whether he wants to continue
                 promptUser();
+                //prompt the user whether he wants to continue
+                
             })
+            
+            
     })
     }
 
@@ -172,7 +195,7 @@ function NewProducts(){
         },
         function(err){
             if(err) throw err;
-            Products();
+            ProductsWithOutPrompt();
             promptUser();
         }
         )}
