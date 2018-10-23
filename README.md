@@ -10,18 +10,19 @@ Depending on the file you choose, you can either act as a Customer of Baamazon, 
 
 Running the BamazonCustomer.js will print out the inventory, and allow you to make a choice of product and quantity you would like to by.
 
-![](./screenshots/CustomerNode.PNG)
-![](./screenshots/CustomerProductsList.PNG)
+
 
 Running the bamazonManager.js will allow you to View the Inventory, Add New Inventory, Increase Inventory and Add New Products.
 
 
-![](./screenshots/ManagerPrompt.png)
-![](./screenshots/ManagerLowInventory.png)
-![](./screenshots/AddInventoryManager.png)
 
 Running the BamazonSupervisor.js will allow you to View Department Sales, with a table the outputs Total Profits for that department.  The BamazonSupervisor.js file will also allow you to add new departments.
 
+![](./screenshots/CustomerNode.PNG)
+![](./screenshots/CustomerProductsList.PNG)
+![](./screenshots/ManagerPrompt.png)
+![](./screenshots/ManagerLowInventory.png)
+![](./screenshots/AddInventoryManager.png)
 ![](./screenshots/SupervisorPrompt.png)
 ![](./screenshots/TotalProfitSupervisor.png)
 
